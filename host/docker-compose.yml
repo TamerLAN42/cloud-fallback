@@ -1,0 +1,20 @@
+version: "3"
+services:
+  sync:
+    build: .
+    container_name: sync_unit
+    dns:
+     - "8.8.8.8"
+    volumes:
+     - ../keys/id_backup:/root/.ssh/id_ed25519
+     - ./data:/data:ro
+    environment:
+     - BACKUP_HOST=<ip or domain of backup host>
+# В качестве примера как сервис используем nginx, но вообще тут подойдёт любое приложение, умеющее отдавать 200 на HEAD /
+# Важно понимать - это не fallback-сервис для nginx, это шаблон, который можно прикрутить к чему угодно.
+  app:
+    image: nginx:stable-alpine
+    volumes:
+     - ./data:/usr/share/nginx/html
+    ports:
+     - "80:80"

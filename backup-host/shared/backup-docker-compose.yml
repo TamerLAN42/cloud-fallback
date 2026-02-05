@@ -1,0 +1,9 @@
+# Здесь держим копию параметров запуска приложения. Обычно они +- статичны, поэтому хранятся сразу на бекап-хосте.
+version: "3"
+services:
+  app:
+    image: nginx:stable-alpine
+    volumes:
+     - ./backup:/usr/share/nginx/html
+    ports:
+     - "80:80"

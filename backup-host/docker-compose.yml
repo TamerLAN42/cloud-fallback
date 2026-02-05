@@ -1,0 +1,41 @@
+version: "3"
+services:
+  terraform:
+    build: ./terraform
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    volumes:
+      - ./terraform/docker-entrypoint.sh:/docker-entrypoint.sh
+      - ./terraform/workspace:/workspace
+      - ../keys/key.json:/key.json:ro
+      - ./terraform/.terraformrc:/root/.terraformrc
+      - ./shared:/shared
+      - ../keys/id_cloud.pub:/root/.ssh/id_ed25519.pub
+      - ../keys/id_cloud:/root/.ssh/id_ed25519
+    working_dir: /workspace
+    environment:
+      - YC_SERVICE_ACCOUNT_KEY_FILE=/key.json
+      - TF_VAR_cloud_id=<your-cloud-id>
+      - TF_VAR_folder_id=<your-cloud-folder-id>
+      - TF_VAR_scheduling_preemptible=false
+    restart: unless-stopped
+
+  tunnel:
+    build: ./reciever
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    environment:
+# Fill out either host+port. Or url if you need specific protocol like https. Not both, it's pointless.
+     - CHECK_HOST=<your-domain.com>
+     - CHECK_PORT=80
+#     - CHECK_URL=<https://your-domain.com:123>
+     - ALLOWED_FAILS=5
+     - CHECK_TIMEOUT=30
+    volumes:
+     - ./shared:/shared
+     - ../keys/id_backup.pub:/home/tunnel/.ssh/authorized_keys
+    ports:
+     - "53182:22"
+    restart: unless-stopped
