@@ -22,7 +22,7 @@ services:
     restart: unless-stopped
 
   tunnel:
-    build: ./reciever
+    build: ./tunnel
     dns:
       - 8.8.8.8
       - 1.1.1.1
