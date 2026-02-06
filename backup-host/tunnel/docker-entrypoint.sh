@@ -3,6 +3,7 @@ ALLOWED_FAILS="${ALLOWED_FAILS:-5}"
 CHECK_TIMEOUT="${CHECK_TIMEOUT:-30}"
 FAIL_COUNT=0
 CHECK_URL="${CHECK_URL:-http://${CHECK_HOST}:${CHECK_PORT:-80}}"
+MAX_CHECK_TIME="${MAX_CHECK_TIME:-10}"
 
 log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1"
@@ -25,7 +26,7 @@ fi
 if [ -n "$CHECK_URL" ]; then
     (
     while true; do
-        if curl -s -f -I --max-time 5 "${CHECK_URL}"; then
+        if curl -s -f -I --max-time $MAX_CHECK_TIME "${CHECK_URL}"; then
 		    log "Status OK, waiting till next check"
 			FAIL_COUNT=0
             sleep "${CHECK_TIMEOUT}"

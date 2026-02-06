@@ -6,7 +6,6 @@ services:
       - 8.8.8.8
       - 1.1.1.1
     volumes:
-      - ./terraform/docker-entrypoint.sh:/docker-entrypoint.sh
       - ./terraform/workspace:/workspace
       - ../keys/key.json:/key.json:ro
       - ./terraform/.terraformrc:/root/.terraformrc
